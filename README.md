@@ -1,57 +1,60 @@
-# 🎬 VideoGrabber
+# YOINKe
 
-A free, GPU-accelerated Chromium extension + native host that detects and downloads videos from any webpage.
+A free, lightweight Chromium extension + desktop downloader (`pywebview` + SQLite) that detects and downloads HLS, DASH, and direct videos from any webpage.
 
-**Supports:** Chrome · Edge · Opera GX · Brave (any Chromium-based browser)
+**Supports:** Chrome · Edge · Opera GX · Brave (Windows & Ubuntu/Linux)
+
+---
 
 ## Features
 
-- 🔍 **Auto-detects** HLS streams, DASH streams, MP4, WebM, and more — passively, as you browse
-- 🎚️ **Quality selection** — picks from detected quality variants (1080p / 720p / 480p…)
-- 🌐 **Language/audio track selection** — choose your audio language when available
-- ⚡ **GPU-accelerated** — uses your RTX (NVDEC decode + NVENC encode via CUDA)
-- ⬇️ **Parallel segment download** — 16 threads via N_m3u8DL-RE for fast HLS/DASH
-- 🎨 **Dark/light theme** — modern popup UI
-- 🔒 **DRM detection** — DRM-protected streams are labelled (not downloaded)
-- ✅ **100% local** — no servers, no telemetry, no subscriptions
+- 🔍 **Auto-detects** HLS (`.m3u8`), DASH (`.mpd`), MP4, WebM, and MKV streams as you browse
+- ★ **Active Video Matching** — highlights the video currently playing on screen
+- 🎚️ **Quality & Language Selection** — choose resolution and audio track before downloading
+- ✏️ **Custom Video Naming** — rename before starting the download
+- ⚡ **16-Thread Parallel Downloading** — powered by `N_m3u8DL-RE` + `ffmpeg` stream copy (`-c copy`, zero re-encoding)
+- 🖥️ **Persistent Desktop App** — lightweight `pywebview` UI with SQLite history, Dark/Light/OLED themes, 6 accent colors, Task Inspector, and 1-click GitHub updates
+- 🔒 **Clean & Local** — zero telemetry, isolated `.venv` + temp staging so incomplete files never clutter your Downloads folder
 
-## Quick Start
+---
 
-1. See [`native-host/README.md`](native-host/README.md) for setup instructions
-2. Load the `extension/` folder in Chrome via `chrome://extensions` → Load Unpacked
-3. Run `native-host/install.bat` once to register the native host
-4. Browse any site, click the 🎬 icon in your toolbar
+## Automated 1-Click Installation
 
-## Project Structure
+### Windows
+1. Run **`native-host\install.bat`** (or use **`YOINKe-Setup.exe`** from GitHub Releases).
+   - Automatically checks/installs Python (via `winget` if needed)
+   - Creates an isolated virtual environment (`native-host\.venv`) so your global Python is untouched
+   - Automatically downloads `ffmpeg.exe` and `N_m3u8DL-RE.exe` into `native-host\bin\`
+   - Registers the Native Messaging Host for Chrome, Edge, Opera GX, and Brave
+   - Creates a **YOINKe** Desktop shortcut
+2. Open `chrome://extensions` → enable **Developer Mode** → **Load unpacked** → select the **`extension\`** folder.
 
+### Ubuntu / Linux
+```bash
+chmod +x native-host/install_linux.sh
+./native-host/install_linux.sh
 ```
-VideoGrabber/
-├── extension/              ← Chrome extension (load this folder)
-│   ├── manifest.json
-│   ├── background.js       ← Network sniffing + native messaging bridge
-│   ├── content.js          ← DOM scanner + EME observer
-│   ├── popup/
-│   │   ├── popup.html      ← GUI
-│   │   ├── popup.js        ← Logic
-│   │   └── popup.css       ← Dark/light theme
-│   ├── libs/
-│   │   └── hls-parser.js   ← HLS + DASH manifest parser
-│   └── icons/
-└── native-host/            ← Python companion app
-    ├── host.py             ← Native messaging entry point
-    ├── downloader.py       ← ffmpeg / N_m3u8DL-RE GPU runner
-    ├── install.bat         ← One-click installer
-    ├── uninstall.bat       ← Removes registry keys
-    ├── requirements.txt    ← pip dependencies
-    └── README.md           ← Full setup guide
+Then load **`extension/`** in Chrome/Chromium/Edge/Brave via `chrome://extensions`.
+
+---
+
+## Building a Windows `.exe` Release
+
+Run from PowerShell:
+```powershell
+.\build_windows_release.ps1
 ```
+This generates `dist\YOINKe-Windows.zip` and `dist\YOINKe-Setup.exe` (using Windows' built-in `.NET` compiler).
 
-## Tools Required
+---
 
-| Tool | Where to get |
-|---|---|
-| `ffmpeg.exe` (NVENC build) | [gyan.dev/ffmpeg/builds](https://www.gyan.dev/ffmpeg/builds/) |
-| `N_m3u8DL-RE.exe` | [github.com/nilaoda/N_m3u8DL-RE/releases](https://github.com/nilaoda/N_m3u8DL-RE/releases) |
-| Python 3.8+ | [python.org](https://www.python.org/downloads/) |
+## Credits & Open-Source Libraries
 
-Place `ffmpeg.exe` and `N_m3u8DL-RE.exe` in `C:\tools\VideoGrabber\` (or configure custom paths in extension Settings).
+YOINKe is built on top of these open-source projects:
+
+- **[N_m3u8DL-RE](https://github.com/nilaoda/N_m3u8DL-RE)** by nilaoda — Multi-threaded HLS/DASH stream downloader
+- **[FFmpeg](https://ffmpeg.org/)** ([gyan.dev Windows builds](https://www.gyan.dev/ffmpeg/builds/)) — Media remuxing and container processing
+- **[pywebview](https://github.com/r0x0r/pywebview)** — Lightweight native WebView2 / WebKitGTK desktop window
+- **[Lucide Icons](https://lucide.dev/)** — Crisp open-source SVG icon set
+- **[Cat-Catch](https://github.com/xifangczy/cat-catch)** — Reference for Chromium MV3 request-header capture and `N_m3u8DL-RE` workflow
+

@@ -1,4 +1,6 @@
-# Databases, logs & temp runtime files (never ship personal data)
+# Virtual environments, databases, logs & temp runtime files
+.venv/
+native-host/.venv/
 *.db
 *.db-wal
 *.db-shm
