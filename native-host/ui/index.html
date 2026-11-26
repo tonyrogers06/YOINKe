@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-accent="indigo">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YOINKe</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="lucide.min.js"></script>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="brand">
+      <img src="logo.png" alt="YOINKe" class="brand-logo">
+      <span class="brand-name">YOINKe</span>
+      <span class="brand-badge">v2.0 • GPU</span>
+    </div>
+
+    <div class="status-pill">
+      <span class="dot-pulse"></span>
+      <span>Browser Extension Ready</span>
+      <span style="opacity:0.4">|</span>
+      <span class="mono" style="font-size:10px">Chrome • Edge • Opera • Brave</span>
+    </div>
+
+    <div class="topbar-right">
+      <div class="speed-chip">
+        <i data-lucide="arrow-down-circle" style="width:13px;height:13px;color:var(--accent)"></i>
+        <span class="mono" id="header-global-speed">0.0 MB/s</span>
+      </div>
+      <button class="btn-accent" onclick="openAddModal()">
+        <i data-lucide="plus" style="width:13px;height:13px"></i>
+        <span>Add URL</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Body -->
+  <div class="app-body">
+
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <button class="btn-new-dl" onclick="openAddModal()">
+          <i data-lucide="plus" style="width:15px;height:15px"></i>
+          <span>New Download</span>
+        </button>
+
+        <div>
+          <div class="nav-section-label">Library</div>
+          <nav class="nav-list">
+            <button class="nav-item active" data-view="all" onclick="switchView('all', this)">
+              <span class="nav-left"><i data-lucide="layers" style="width:15px;height:15px"></i><span>All Downloads</span></span>
+              <span class="nav-count mono" id="cnt-all">0</span>
+            </button>
+            <button class="nav-item" data-view="active" onclick="switchView('active', this)">
+              <span class="nav-left"><i data-lucide="activity" style="width:15px;height:15px"></i><span>Active</span></span>
+              <span class="nav-count nav-count-active mono" id="cnt-active">0</span>
+            </button>
+            <button class="nav-item" data-view="completed" onclick="switchView('completed', this)">
+              <span class="nav-left"><i data-lucide="check-circle-2" style="width:15px;height:15px;color:#34D399"></i><span>Completed</span></span>
+              <span class="nav-count mono" id="cnt-completed">0</span>
+            </button>
+            <button class="nav-item" data-view="failed" onclick="switchView('failed', this)">
+              <span class="nav-left"><i data-lucide="alert-circle" style="width:15px;height:15px;color:#F87171"></i><span>Failed</span></span>
+              <span class="nav-count nav-count-failed mono" id="cnt-failed">0</span>
+            </button>
+          </nav>
+        </div>
+
+        <div class="cat-box">
+          <div class="nav-section-label">Formats</div>
+          <div class="cat-row">
+            <span class="cat-row-left"><i data-lucide="video" style="width:14px;height:14px;color:#60A5FA"></i><span>HLS / DASH</span></span>
+            <span class="mono" style="font-size:10px" id="cat-streams">0</span>
+          </div>
+          <div class="cat-row">
+            <span class="cat-row-left"><i data-lucide="film" style="width:14px;height:14px;color:#34D399"></i><span>MP4 / MKV / WebM</span></span>
+            <span class="mono" style="font-size:10px" id="cat-direct">0</span>
+          </div>
+          <div class="cat-row">
+            <span class="cat-row-left"><i data-lucide="hard-drive" style="width:14px;height:14px;color:#A78BFA"></i><span>Total Saved</span></span>
+            <span class="mono" style="font-size:10px" id="cat-size">0 MB</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="bw-card">
+          <div class="bw-header">
+            <span style="color:var(--text-secondary)">Total Bandwidth</span>
+            <span class="mono" style="color:var(--accent);font-weight:600" id="sidebar-speed">0.0 MB/s</span>
+          </div>
+          <div class="sparkline" id="sparkline"></div>
+          <div class="bw-meta">
+            <span id="bw-tasks">0 active tasks</span>
+            <span id="bw-threads">16 threads</span>
+          </div>
+        </div>
+
+        <div class="sidebar-actions">
+          <button class="btn-surface" onclick="openExternal('coffee')" title="Support the developer (placeholder link)">
+            <i data-lucide="heart" style="width:14px;height:14px;color:#F472B6"></i>
+            <span>Please Donate</span>
+          </button>
+          <button class="btn-surface" onclick="openExternal('github')" title="Open GitHub Repository">
+            <i data-lucide="github" style="width:14px;height:14px;color:var(--text-primary)"></i>
+            <span>GitHub</span>
+          </button>
+        </div>
+
+        <div class="sidebar-actions">
+          <button class="btn-surface" onclick="openSettingsModal()">
+            <i data-lucide="settings" style="width:14px;height:14px;color:var(--text-secondary)"></i>
+            <span>Settings</span>
+          </button>
+          <button class="btn-icon-sq" onclick="cycleThemeQuick()" title="Toggle Theme (Dark / Light / OLED)">
+            <i data-lucide="sun-moon" style="width:15px;height:15px"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main List Area -->
+    <main class="main-area">
+      <div class="main-header">
+        <div class="main-title-wrap">
+          <h1 class="main-title" id="view-title">All Downloads</h1>
+          <span class="counter-pill mono" id="downloads-counter">0 items</span>
+        </div>
+
+        <div class="main-controls">
+          <div class="search-wrap">
+            <i data-lucide="search" style="width:14px;height:14px"></i>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search filename or URL..." oninput="renderAll()">
+          </div>
+
+          <button class="btn-ctrl" onclick="clearFinished()" title="Clear completed & failed history">
+            <i data-lucide="trash-2" style="width:13px;height:13px;color:var(--text-secondary)"></i>
+            <span>Clear Finished</span>
+          </button>
+
+          <button class="btn-ctrl" onclick="openOutputFolder()" title="Open Downloads Folder">
+            <i data-lucide="folder-open" style="width:13px;height:13px;color:var(--accent)"></i>
+            <span>Folder</span>
+          </button>
+
+          <div class="density-group">
+            <button class="density-btn active" id="densityComfortable" onclick="setDensity('comfortable')" title="Comfortable view">
+              <i data-lucide="list" style="width:14px;height:14px"></i>
+            </button>
+            <button class="density-btn" id="densityCompact" onclick="setDensity('compact')" title="Compact view">
+              <i data-lucide="align-justify" style="width:14px;height:14px"></i>
+            </button>
+          </div>
+
+          <button class="btn-icon-sq" onclick="toggleDrawer()" title="Toggle Task Inspector">
+            <i data-lucide="panel-right" style="width:15px;height:15px"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="subbar">
+        <div class="sort-wrap">
+          <span>Sort:</span>
+          <select class="sort-select" id="sortSelect" onchange="renderAll()">
+            <option value="recent">Most Recent</option>
+            <option value="size">Largest Size</option>
+            <option value="name">File Name</option>
+          </select>
+        </div>
+        <div class="legend-wrap" id="legendWrap">
+          <span class="legend-item"><span class="dot" style="background:var(--accent)"></span> Active (<span id="leg-active">0</span>)</span>
+          <span class="legend-item"><span class="dot" style="background:#34D399"></span> Completed (<span id="leg-done">0</span>)</span>
+          <span class="legend-item"><span class="dot" style="background:#F87171"></span> Failed (<span id="leg-fail">0</span>)</span>
+        </div>
+      </div>
+
+      <div class="downloads-list" id="downloadsList"></div>
+
+      <footer class="footer mono">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="display:inline-flex;align-items:center;gap:5px"><span class="dot" style="background:#34D399"></span> Engine Ready</span>
+          <span>•</span>
+          <span>Save Path: <span style="color:var(--text-primary)" id="footer-path">~/Downloads/VideoGrabber</span></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span>GPU: <strong style="color:var(--text-primary)" id="footer-gpu">NVENC/CUDA</strong></span>
+          <span>Free Space: <strong style="color:var(--text-primary)" id="footer-disk">—</strong></span>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Right Inspector Drawer -->
+    <aside class="drawer hidden" id="detailsDrawer">
+      <div>
+        <div class="drawer-header">
+          <span style="display:flex;align-items:center;gap:7px"><i data-lucide="info" style="width:15px;height:15px;color:var(--accent)"></i> Task Inspector</span>
+          <button onclick="toggleDrawer()" style="color:var(--text-secondary)"><i data-lucide="x" style="width:15px;height:15px"></i></button>
+        </div>
+        <div class="drawer-body" id="drawerBody"></div>
+      </div>
+      <div class="drawer-footer" id="drawerFooter"></div>
+    </aside>
+
+  </div>
+
+  <!-- Add URL Modal -->
+  <div class="modal-backdrop hidden" id="addModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <span style="display:flex;align-items:center;gap:8px"><i data-lucide="link" style="width:15px;height:15px;color:var(--accent)"></i> Add New Download</span>
+        <button onclick="closeAddModal()" style="color:var(--text-secondary)"><i data-lucide="x" style="width:16px;height:16px"></i></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <label class="meta-label">Video / Stream URL (.m3u8, .mpd, .mp4, .webm)</label>
+          <input type="text" class="field-input mono" id="modalUrl" placeholder="https://example.com/video/master.m3u8">
+        </div>
+        <div>
+          <label class="meta-label">File Name (Optional)</label>
+          <input type="text" class="field-input" id="modalName" placeholder="My_Video">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label class="meta-label">Stream Type</label>
+            <select class="field-input" id="modalType">
+              <option value="AUTO">Auto-Detect</option>
+              <option value="HLS">HLS (.m3u8)</option>
+              <option value="DASH">DASH (.mpd)</option>
+              <option value="MP4">Direct (MP4/WebM)</option>
+            </select>
+          </div>
+          <div>
+            <label class="meta-label">Output Format</label>
+            <select class="field-input" id="modalFormat">
+              <option value="mp4">MP4</option>
+              <option value="mkv">MKV</option>
+              <option value="webm">WebM</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-ctrl" onclick="closeAddModal()">Cancel</button>
+        <button class="btn-accent" onclick="submitNewDownload()">
+          <i data-lucide="download" style="width:13px;height:13px"></i>
+          <span>Start Download</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-backdrop hidden" id="settingsModal">
+    <div class="modal-card wide">
+      <div class="modal-head">
+        <span style="display:flex;align-items:center;gap:8px"><i data-lucide="sliders" style="width:16px;height:16px;color:var(--accent)"></i> YOINKe Preferences</span>
+        <button onclick="closeSettingsModal()" style="color:var(--text-secondary)"><i data-lucide="x" style="width:16px;height:16px"></i></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <label class="meta-label">Application Theme</label>
+          <div class="theme-grid">
+            <div class="theme-card" id="theme-card-dark" onclick="setTheme('dark')" style="background:#111318;color:#F1F3F8">
+              <div style="font-weight:600;font-size:12px">Dark</div>
+              <div style="font-size:10px;color:#9299A8">Default #111318</div>
+            </div>
+            <div class="theme-card" id="theme-card-light" onclick="setTheme('light')" style="background:#F5F6F8;color:#20232B">
+              <div style="font-weight:600;font-size:12px">Light</div>
+              <div style="font-size:10px;color:#747B89">Clean #F5F6F8</div>
+            </div>
+            <div class="theme-card" id="theme-card-oled" onclick="setTheme('oled')" style="background:#000000;color:#F5F5F5">
+              <div style="font-weight:600;font-size:12px">OLED Black</div>
+              <div style="font-size:10px;color:#929292">Pure #000000</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="meta-label">Accent Color</label>
+          <div class="swatches" id="accentSwatches">
+            <button class="swatch-btn" data-acc="indigo" onclick="setAccent('indigo')"><span class="swatch-circle" style="background:#818CF8"></span><span>Indigo</span></button>
+            <button class="swatch-btn" data-acc="blue" onclick="setAccent('blue')"><span class="swatch-circle" style="background:#3B82F6"></span><span>Blue</span></button>
+            <button class="swatch-btn" data-acc="emerald" onclick="setAccent('emerald')"><span class="swatch-circle" style="background:#10B981"></span><span>Emerald</span></button>
+            <button class="swatch-btn" data-acc="violet" onclick="setAccent('violet')"><span class="swatch-circle" style="background:#A78BFA"></span><span>Violet</span></button>
+            <button class="swatch-btn" data-acc="orange" onclick="setAccent('orange')"><span class="swatch-circle" style="background:#F59E0B"></span><span>Orange</span></button>
+            <button class="swatch-btn" data-acc="rose" onclick="setAccent('rose')"><span class="swatch-circle" style="background:#F472B6"></span><span>Rose</span></button>
+          </div>
+        </div>
+
+        <div>
+          <label class="meta-label">Default Download Directory</label>
+          <div style="display:flex;gap:8px">
+            <input type="text" class="field-input mono" id="setOutputDir">
+            <button class="btn-ctrl" onclick="browseOutputDir()">Browse...</button>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label class="meta-label">Segments Per Download</label>
+            <select class="field-input" id="setThreads">
+              <option value="8">8 Threads</option>
+              <option value="16">16 Threads (Fastest)</option>
+              <option value="32">32 Threads</option>
+            </select>
+          </div>
+          <div>
+            <label class="meta-label">List Density</label>
+            <select class="field-input" id="setDensity" onchange="setDensity(this.value)">
+              <option value="comfortable">Comfortable</option>
+              <option value="compact">Compact</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div>
+            <div style="font-weight:600;font-size:12px">GPU Hardware Acceleration</div>
+            <div style="font-size:10px;color:var(--text-secondary)">Use NVIDIA CUDA/NVENC when transcoding</div>
+          </div>
+          <input type="checkbox" id="setPreferGpu" style="width:16px;height:16px;accent-color:var(--accent)">
+        </div>
+
+        <div class="setting-row">
+          <div>
+            <div style="font-weight:600;font-size:12px">App Updates (v2.0.0)</div>
+            <div style="font-size:10px;color:var(--text-secondary)" id="updateStatusText">Check GitHub Releases for a 1-click update</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn-ctrl" id="btnCheckUpdate" onclick="checkForUpdates()">
+              <i data-lucide="refresh-cw" style="width:13px;height:13px;color:var(--accent)"></i>
+              <span>Check for Updates</span>
+            </button>
+            <button class="btn-accent hidden" id="btnApplyUpdate" onclick="applyUpdate()">
+              <i data-lucide="download" style="width:13px;height:13px"></i>
+              <span>Update Now</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-ctrl" onclick="closeSettingsModal()">Cancel</button>
+        <button class="btn-accent" onclick="saveSettingsFromModal()">Save Preferences</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast hide" id="toast">
+    <i data-lucide="check-circle-2" style="width:15px;height:15px;color:#34D399"></i>
+    <span id="toastMsg">Done</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

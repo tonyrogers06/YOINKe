@@ -1,14 +1,16 @@
+# Databases, logs & temp runtime files (never ship personal data)
 *.db
 *.db-wal
 *.db-shm
 logs/
 __pycache__/
 dist/
+
+# Machine-specific generated launchers & native host manifests
 native-host/bin/
-native-host/ui/lucide.min.js
 native-host/launch_host.bat
 native-host/launch_app.bat
 native-host/launch_host.sh
 native-host/launch_app.sh
-*.png
-*.ico
+native-host/manifest_host.json
+native-host/com.videograbber.host.json

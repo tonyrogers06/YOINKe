@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YOINKe</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="header-left">
+    <img src="../icons/icon48.png" alt="YOINKe" class="logo-img">
+    <span class="logo-text">YOINKe</span>
+  </div>
+  <div class="header-right">
+    <button id="btn-open-app" class="icon-btn" title="Open Desktop App">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+    </button>
+    <button id="btn-theme" class="icon-btn" title="Toggle theme">🌙</button>
+    <button id="btn-refresh" class="icon-btn" title="Refresh detections">🔄</button>
+    <button id="btn-settings" class="icon-btn" title="Settings">⚙️</button>
+  </div>
+</header>
+
+<!-- ── Status Bar ─────────────────────────────────────────────────────── -->
+<div class="status-bar" id="status-bar">
+  <span id="status-text">Scanning for videos…</span>
+  <div class="status-actions">
+    <button id="btn-filter-active" class="btn-pill hidden" title="Show only the video currently playing on screen">★ Playing Only</button>
+    <button id="btn-clear" class="btn-link" title="Clear list">Clear</button>
+  </div>
+</div>
+
+<!-- ── Main Content ───────────────────────────────────────────────────── -->
+<main id="main-content">
+
+  <!-- Empty state -->
+  <div class="empty-state" id="empty-state">
+    <div class="empty-icon">📡</div>
+    <p class="empty-title">No videos detected yet</p>
+    <p class="empty-hint">Play or interact with a video on the page, then click 🔄</p>
+  </div>
+
+  <!-- Video cards list -->
+  <div id="video-list"></div>
+
+</main>
+
+<!-- ── Settings Panel (hidden by default) ────────────────────────────── -->
+<section id="settings-panel" class="settings-panel hidden">
+  <h3 class="settings-title">⚙ Settings</h3>
+
+  <label class="settings-label">Download Folder
+    <input type="text" id="set-out-dir" class="settings-input"
+           placeholder="Leave blank for ~/Downloads/VideoGrabber">
+  </label>
+
+  <label class="settings-label">ffmpeg.exe Path
+    <input type="text" id="set-ffmpeg-path" class="settings-input"
+           placeholder="C:\tools\VideoGrabber\ffmpeg.exe">
+  </label>
+
+  <label class="settings-label">N_m3u8DL-RE.exe Path
+    <input type="text" id="set-nm3u8-path" class="settings-input"
+           placeholder="C:\tools\VideoGrabber\N_m3u8DL-RE.exe">
+  </label>
+
+  <label class="settings-label">Parallel Threads (HLS/DASH)
+    <input type="number" id="set-threads" class="settings-input settings-input--small"
+           min="1" max="64" value="16">
+  </label>
+
+  <label class="settings-label checkbox-label">
+    <input type="checkbox" id="set-prefer-gpu" checked>
+    Use GPU acceleration (NVENC/NVDEC via CUDA)
+  </label>
+
+  <div class="settings-actions">
+    <button id="btn-save-settings" class="btn btn--primary">Save Settings</button>
+    <button id="btn-close-settings" class="btn btn--ghost">Cancel</button>
+  </div>
+
+  <div class="settings-hint">
+    📦 <a href="#" id="link-install-guide">Native host setup guide</a>
+  </div>
+</section>
+
+<!-- ── Toast Notification ─────────────────────────────────────────────── -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="../libs/hls-parser.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>
